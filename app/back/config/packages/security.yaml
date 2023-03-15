@@ -1,0 +1,42 @@
+security:
+    enable_authenticator_manager: true
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    password_hashers:
+        App\Entity\User:
+            algorithm: bcrypt
+        Symfony\Component\Security\Core\User\User:
+            algorithm: plaintext
+        Symfony\Component\Security\Core\User\InMemoryUser:
+            algorithm: plaintext
+
+    providers:
+        chain_provider:
+            chain:
+                providers: [ in_memory, app_user_provider ]
+        in_memory:
+            memory:
+                users:
+                    admin: { password: 'admin', roles: [ ROLE_USER ] }
+        app_user_provider:
+            entity:
+                class: 'App\Entity\User'
+                property: 'username'
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            provider: chain_provider
+            pattern: ^/
+            json_login:
+                login_path: app_login
+                check_path: app_login
+            logout:
+                path: app_logout
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        - { path: ^/api/v1/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: ROLE_USER }
+

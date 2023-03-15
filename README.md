@@ -1,27 +1,54 @@
-# Simple Symfony (via Docker) Example App
-> Basic docker instructions
+# Symfony Docker
+> Пример использования Symfony v.6.2 (PHP 8.2) с Docker-Compose
 
+## Как работать с этим проектом?
 
-## How to create app?
-> You can change PHP version in `php/Dockerfile`
+Для работы с этим проектом вам не потребуется ставить что-то дополнительное, кроме как Docker & Docker-Compose на свою локальную машину!
+> Если ваш компьютер или ОС не поддерижвает Docker, вы всегда сможете развернуть все вручную. Но вам придется завестись файлом .env.local.
 
-Run (and build) empty docker container:
-
-```
-docker-compose up --build
-```
-
-Configure git for creating symfony app:
+### Соберите и запустите контейнер с уже готовым рабочим окружением:
 
 ```
-docker-compose exec app git config --global user.name "Your name"
-docker-compose exec app git config --global user.email "Your E-mail"
+$ docker-compose up --build -d
 ```
 
-Creating a new symfomy app:
+### Зайдите в свое рабочение окружение:
 
 ```
-docker-compose exec app symfony new .
+$ docker-compose exec php /bin/bash
 ```
 
-Enjoy!
+### Установите зависимости бекенда и инициализируйте БД:
+
+```
+$ cd back
+$ composer install
+$ ./deploy.sh
+```
+
+Также можете сразу запустить веб-сервер:
+
+```
+$ symfony server:start
+```
+
+### Установите зависимости фронтенда и запустите веб-сервер
+
+```
+$ npm install
+$ npm start
+```
+
+Вы можете использовать скомпилированный фронтенд для проверки режима production:
+
+```
+$ npm run build
+```
+
+## Готово!
+
+Теперь на вашей машине доступны адреса:
+
+http://localhost:8000 – backend/production-mode
+
+http://localhost:3000 – frontend/dev-mode
